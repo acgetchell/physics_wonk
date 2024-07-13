@@ -13,8 +13,18 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+# macOS cruft
+.DS_Store
+
+# Visual Studio Code workspace file
+.vscode/
+
+# Cloud GPU API
+runtime-config.toml
 
 # Added by cargo
 
 /target
 /dist
+.spin/
+.env

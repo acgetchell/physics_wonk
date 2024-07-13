@@ -1,0 +1,45 @@
+spin_manifest_version = 2
+
+[application]
+name = "physics-wonk"
+version = "0.1.0"
+authors = ["Adam Getchell <acgetchell@ucdavis.edu>"]
+description = "An AI that answers questions based on physics papers in arXiv"
+
+[[trigger.http]]
+route = "/..."
+component = "physics-wonk"
+
+[component.physics-wonk]
+source = "target/wasm32-wasi/release/physics_wonk.wasm"
+ai_models = ["llama2-chat"]
+key_value_stores = ["default"]
+allowed_outbound_hosts = []
+[component.physics-wonk.build]
+command = "cargo build --target wasm32-wasi --release"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[trigger.http]]
+route = "/..."
+component = "ui"
+
+[component.ui]
+source = { url = "https://github.com/fermyon/spin-fileserver/releases/download/v0.2.1/spin_static_fs.wasm", digest = "sha256:5f05b15f0f7cd353d390bc5ebffec7fe25c6a6d7a05b9366c86dcb1a346e9f0f" }
+files = [{ source = "assets", destination = "/" }]
+
+[variables]
+kv_explorer_user = { required = true }
+kv_explorer_password = { required = true }
+
+[[trigger.http]]
+component = "questions"
+route = "/internal/kv-explorer/..."
+
+[component.questions]
+source = { url = "https://github.com/fermyon/spin-kv-explorer/releases/download/v0.10.0/spin-kv-explorer.wasm", digest = "sha256:65bc286f8315746d1beecd2430e178f539fa487ebf6520099daae09a35dbce1d" }
+allowed_outbound_hosts = ["redis://*:*", "mysql://*:*", "postgres://*:*"]
+# add or remove stores you want to explore here
+key_value_stores = ["default"]
+
+[component.questions.variables]
+kv_credentials = "{{ kv_explorer_user }}:{{ kv_explorer_password }}"

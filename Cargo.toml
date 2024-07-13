@@ -1,8 +1,17 @@
 [package]
-name = "physics_wonk"
+name = "physics-wonk"
+authors = ["Adam Getchell <acgetchell@ucdavis.edu>"]
+description = "An AI that answers questions based on physics papers in arXiv"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+crate-type = ["cdylib"]
+
 [dependencies]
-console_error_panic_hook = "0.1.7"
-leptos = { version = "0.6.12", features = ["csr"] }
+anyhow = "1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+spin-sdk = "3.0.1"
+
+[workspace]
